@@ -1,6 +1,23 @@
 /*
- *  Copyright (c) 2019-present, LBS Trading LLC. All rights reserved.
- *  See the file LICENSE.md for licensing information.
+ * Copyright (c) 2026 Lyes Bensaadi
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #pragma once
@@ -19,6 +36,13 @@
 
 #define INVOKE_PLUGIN_HOOKS(FN) \
   (void) std::initializer_list<int>{ (Plugins::FN, 0)... };
+
+#define TRUE_FOR_ALL_PLUGINS(FN) \
+    ([=]() -> bool { \
+      bool result = true; \
+      (void) std::initializer_list<int>{ (result &= Plugins::FN, 0)... }; \
+      return result; \
+    })()
 
 namespace book {
 
@@ -46,10 +70,10 @@ public:
   const TrackerMap& bids() const { return bids_; }
   const TrackerMap& asks() const { return asks_; }
 
+protected:
   /* for callbacks to be accessed from plugins */
   Callbacks& callbacks() { return callbacks_; };
 
-protected:
   bool match(
     Tracker& taker,
     TrackerMap& makers);
@@ -95,7 +119,9 @@ OB<Tracker, Plugins...>::OB(uint32_t symbol_id) :
 
 template <class Tracker, class... Plugins>
 void OB<Tracker, Plugins...>::set_market_price(double price) {
+  double prev_market_price = market_price_;
   market_price_ = price;
+  INVOKE_PLUGIN_HOOKS(on_market_price_change(prev_market_price, price))
 }
 
 template <class Tracker, class... Plugins>
@@ -117,7 +143,9 @@ bool OB<Tracker, Plugins...>::add(const OrderPtr& order) {
   size_t accept_cb_index = callbacks_.size();
   emit_callback(TypedCallback::accept(order));
   
-  bool matched = add_tracker(taker);
+  bool should_add_tracker_value = TRUE_FOR_ALL_PLUGINS(should_add_tracker(taker));
+
+  bool matched = should_add_tracker_value && add_tracker(taker);
 
   callbacks_[accept_cb_index].qty = taker.filled_qty();
   callbacks_[accept_cb_index].avg_price = taker.avg_price();

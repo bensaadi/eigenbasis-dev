@@ -1,10 +1,28 @@
 /*
- *  Copyright (c) 2019-present, LBS Trading LLC. All rights reserved.
- *  See the file LICENSE.md for licensing information.
+ * Copyright (c) 2026 Lyes Bensaadi
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #pragma once
 
+#include <stdexcept>
 #include <cassert>
 #include "constants.h"
 
@@ -32,11 +50,11 @@ struct BaseTracker {
 
   void fill(double fill_qty, double fill_cost) {
     if(funds_ != 0 && fill_cost + filled_cost_ > funds_) {
-      throw new std::runtime_error("Market buy fill exceeds funds");
+      throw std::runtime_error("Market buy fill exceeds funds");
     }
 
     if(qty_ != 0 && fill_qty + filled_qty_ > qty_) {
-      throw new std::runtime_error("Fill qty exceeds order qty");
+      throw std::runtime_error("Fill qty exceeds order qty");
     }
 
     avg_price_ = (avg_price_ * filled_qty_  + fill_cost) / (filled_qty_ + fill_qty); 
