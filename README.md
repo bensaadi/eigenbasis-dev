@@ -1,34 +1,49 @@
-#### Building
+# Eigenbasis
+> **A high-performance C++ framework for building low-latency financial software.**
 
-```
+## 🚀 Getting Started
+
+
+### Build Instructions
+
+```bash
+# Clone the repository
+git clone https://github.com/bensaadi/eigenbasis-dev.git
+cd eigenbasis-dev
+
+# Create build directory
 mkdir build && cd build
+
+# Configure and build
 cmake ..
 make
 ```
 
-This will build the header-only libraries and test suites.
+## 📖 Overview
+**Eigenbasis** is a long-term project dedicated to engineering open-source trading technologies that meet state-of-the-art performance and reliability standards. 
 
+The framework provides a suite of decoupled, highly optimized building blocks—from matching engines to order routers—allowing fintech developers to construct the next generation of financial products without reinventing the underlying infrastructure.
 
-#### Purpose
-This is a long-term project devoted to building open-source trading technologies that meet state-of-the-art performance and reliability standards. The idea is to provide building blocks that fintech companies can reuse to build the next class of innovative financial products.
+## 🏗 Approach
+Our design philosophy prioritizes:
+* **Low Latency**: Critical paths are optimized for cache locality and minimal branch misprediction.
+* **Modularity**: Components are loosely coupled, allowing for independent use or seamless integration.
+* **Testability**: Rigorous unit testing ensures reliability in high-stakes trading environments.
 
-#### Approach
-Building small, reusable, and testable components and abstractions that remain relevant as use cases and technologies evolve.
+## 🧩 Modules & Status
 
-#### Modules
-
-| module             | lang | description                                                                                                                             | release  |
-| ------------------ | ---- | --------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| **book**           | C++  | a modular, extensible, high-throughput limit order book                                                                                 | released |
-| **depth**          | C++  | an aggregate depth order book with arbitrary precision and number of levels                                                             | released |
-| **margin-utils**   | C++  | a set of utility classes for margin trading and automatic liquidation                                                                   | upcoming |
-| **mm-quotes**      | C++  | generates orders given a stream of quotes from market makers                                                                            | upcoming |
-| **router**         | C++  | seamless, real-time routing of orders to multiple external exchanges. integrates with the limit order book via the *routable* plugin.   | upcoming |
-| **observer**       | C++  | a template-based wrapper for implementing the observer pattern. Can use Intel TBB Concurrent Queues or lock-free queues under the hood. | upcoming |
-| **ohlc**           | C++  | incremental generation of OHLC data and indicators given a stream of trade data.                                                        | upcoming |
-| **clearing-house** | C++  | real-time balance settlement and netting given a stream of trade data. also performs fees/rebates calculations                          | upcoming |
-| **wsfix**          | C++  | streams market data via WebSocket compressed with the FAST algorithm. includes a WebAssembly package for decompression                  | upcoming |
-| **depth-chart**    | JS   | a real-time, interactive depth chart built with D3                                                                                      | upcoming |
+| Module | Language | Description | Status |
+| :--- | :---: | :--- | :---: |
+| **book** | C++ | A modular, high-throughput Limit Order Book (LOB). | ✅ Released |
+| **depth** | C++ | Aggregate depth order book with arbitrary precision. | ✅ Released |
+| **margin-utils**| C++ | Utility classes for margin trading and automatic liquidation. | 🚧 Upcoming |
+| **mm-quotes** | C++ | Generates orders given a stream of quotes from market makers. | 🚧 Upcoming |
+| **router** | C++ | Real-time order routing to multiple external exchanges. | 🚧 Upcoming |
+| **observer** | C++ | Template-based wrapper for the observer pattern (Intel TBB/Lock-free).| 🚧 Upcoming |
+| **ohlc** | C++ | Incremental generation of OHLC data and indicators. | 🚧 Upcoming |
+| **clearing-house**| C++ | Real-time balance settlement, netting, and fee calculation. | 🚧 Upcoming |
+| **wsfix** | C++ | FAST-compressed market data streaming via WebSocket (WASM ready). | 🚧 Upcoming |
+| **depth-chart** | JS/D3 | Real-time, interactive depth chart visualization. | 🚧 Upcoming |
 
 ### Contributors
 
