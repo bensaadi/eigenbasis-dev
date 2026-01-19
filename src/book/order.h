@@ -28,6 +28,7 @@ namespace book {
 
 class Order {
 public:
+  virtual ~Order() = default;
   virtual bool is_bid() const = 0;
   virtual double qty() const = 0;
   virtual double price() const = 0;

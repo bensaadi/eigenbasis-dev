@@ -24,6 +24,7 @@
 
 #include <stdexcept>
 #include <cassert>
+#include <cmath>
 #include "constants.h"
 
 namespace book {

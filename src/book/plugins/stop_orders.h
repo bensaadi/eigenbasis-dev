@@ -2,11 +2,13 @@
 
 #include <book/plugin.h>
 #include <book/book_price.h>
+#include <functional>
 
 namespace book {
 namespace plugins {
 
 struct StopOrder {
+  virtual ~StopOrder() = default;
   virtual double stop_price() const = 0;
 };
 
@@ -14,14 +16,16 @@ template <class Tracker>
 class StopOrdersPlugin : public Plugin<Tracker> {
 public:
 	using OrderPtr = typename Plugin<Tracker>::OrderPtr;
-	using TrackerMap = typename Plugin<Tracker>::TrackerMap;
 	using TrackerVec = typename Plugin<Tracker>::TrackerVec;
 	using TypedCallback = typename Plugin<Tracker>::TypedCallback;
+
+	/* Sorted the opposite of limit prices */
+	using StopTrackerMap = std::multimap<BookPrice, Tracker, std::greater<BookPrice>>;
 
 protected:
 	bool should_add_tracker(const Tracker& taker) override {
 		double stop_price = taker.ptr()->stop_price();
-		return stop_price == 0 || add_stop_order(taker, stop_price);
+		return stop_price == 0 || !add_stop_order(taker, stop_price);
 	}
 
 	void on_market_price_change(double prev_price, double new_price) override {
@@ -38,8 +42,8 @@ protected:
 
 
 private:
-	TrackerMap stop_bids_;
-	TrackerMap stop_asks_;
+	StopTrackerMap stop_bids_;
+	StopTrackerMap stop_asks_;
 	TrackerVec pending_orders_;
 
 	bool add_stop_order(const Tracker& tracker, double stop_price) {
@@ -57,7 +61,7 @@ private:
 	  return true;
 	}
 
-	void check_stop_orders(TrackerMap& stops, BookPrice& until) {
+	void check_stop_orders(StopTrackerMap& stops, BookPrice& until) {
 		auto pos = stops.begin(); 
 		while(pos != stops.end()) {
 			auto here = pos++;

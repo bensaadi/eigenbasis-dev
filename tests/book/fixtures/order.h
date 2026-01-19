@@ -96,7 +96,7 @@ public:
       OrderWithUserID(user_id, is_bid, price, qty, funds),
        stop_price_(stop_price) { }
 
-  double stop_price() const {
+  double stop_price() const override {
     return stop_price_;
   }
 
